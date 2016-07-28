@@ -15,7 +15,7 @@ class Board{
     int board_array[][8];
 
     Board(int new_board[8][8]){
-        std::memcpy(board_array, new_board,sizeof(int)*8*8);
+        std::copy(&new_board[0][0], &new_board[0][0] + 8*8, &board_array[0][0]);
     }
     Board() : Board(clean_board) {}
 
