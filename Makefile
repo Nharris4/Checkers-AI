@@ -7,15 +7,17 @@ SRCDIR= src
 SRC=$(wildcard $(SRCDIR)/*.cpp)
 OBJ=$(SRC:%.cpp=%.o)
 
-.PHONY: debug
-debug: CXXFLAGS+=$(CXX_DEBUG_FLAGS)
-debug: all
-
 all: $(OBJ)
 	$(CXX) -o $(BIN) $^
 
 %.o: %.c %.h
-	$(CXX) $@ -c $<
+	$(CXX) $@ -c $^
 
-clean:
+
+.PHONY: debug
+debug: CXXFLAGS+=$(CXX_DEBUG_FLAGS)
+debug: all
+
+.PHONY: clean
+clean: 
 	rm -f $(SRCDIR)/*.o $(BIN)  *~
