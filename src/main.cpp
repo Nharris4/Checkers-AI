@@ -13,7 +13,7 @@ void read_board(ifstream* boardfile){
 }
 
 void start_game(int red_player, int black_player, int time){
-    cout << "To be implemented!" << endl;
+    (current_game->get_game_board())->display();
 }
 
 

@@ -25,7 +25,7 @@
 #define RED 0
 #endif
 
-Game *current_game =  nullptr;
+Game *current_game;
 
 void start_game(int red_player, int black_player,int time_limit);
 

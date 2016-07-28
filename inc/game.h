@@ -8,7 +8,6 @@
 
 class Game{
     private:
-    Board *game_board = nullptr;
     int max_depth;
     int max_time;
     int current_depth;
@@ -21,6 +20,9 @@ class Game{
     time_t end_time;
 
     public:
+
+    Board *game_board;
+
     Game(int player_1, int player_2){
     	this->player_1 = player_1;
     	this->player_2 = player_2;

@@ -6,20 +6,20 @@
 #include <iostream>
 #include <list>
 #include <string>
-#include <cstdint>
 
 class Board{
     private:
-    static const int clean_board[8][8]; 
+    static int clean_board[8][8]; 
     public:
 
-    uint8_t board_array[8][8];
+    int board_array[][8];
 
-   Board() : Board(clean_board) {}
+    Board(int new_board[8][8]){
+        memcpy(&board_array, &new_board,sizeof(int)*8*8);
+    }
+    Board() : Board(clean_board) {}
 
     ~Board();
-
-    Board(int new_board[8][8]);
     
     // returns true if the position (i,j) is within the board
     bool is_valid_pos(int i, int j){
