@@ -1,51 +1,107 @@
 //board.cpp
 //ECE 469 AI
 
-#include "board.h"
-#include "colors.h"
+#include "../inc/board.h"
+#include "../inc/colors.h"
 
 using namespace std;
 
-Board::display(){
-    cout << bg_red;
-    for(int i = 0; i < 56; i++)
-            cout << square;
+Board::clean_board = {
+        {1,0,1,0,1,0,1,0},
+        {0,1,0,1,0,1,0,1},
+        {1,0,1,0,1,0,1,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,1,0,1,0,1,0,1},
+        {1,0,1,0,1,0,1,0},
+        {0,1,0,1,0,1,0,1}
+    };
 
-    cout << rst << endl;
-    cout << bg_red << square;
-    cout << bg_white;
+Board::Board(int[][] new_board){
+	if (sizeof(new_board) < sizeof(int) * 8 * 8){
 
-    for(int i = 0; i < 52; i++)
-            cout << square;
+	}
+	else {
+		board_array = new_board 
+	}
 
-    cout << bg_red << square << rst << endl;
+}
+Board::is_king(int loc_x, int loc_y){
+	return (board_array[loc_x][loc_y] > 2) ? true : false;
+}
 
-    bool odd;
-    for (int i = 0; i < 8; i++)
-            for(int j =0; j<3; j++)
-                    for(int k = 0; k<4; k++){
-                        int n = i*4+k;
+Board::contains_piece(int loc_x,int loc_y){
+	return (board_array[loc_x][loc_y] > 0)? true : false;
+}
 
-                        if(k == 0){
-                            cout << bg_red << square;;
-                            if (i < 4)
-                                    cout << bg_white << square;
-                            else
-                                    cout << bg_black << square;
-                        }
+Board::is_red(int loc_x, int loc_y){
+	return (board_array[loc_x][loc_y] % 2) ? true : false;
+}
 
-                        odd = (((n - (n%4))/4)%2);
-                        if(!odd)
-                                cout << bg_yellow << square;
-                        else    cout << bg_black << square;
-                        
-                        cout << bg_red;
-                        if(j ==0){
-                                if (i <10)
 
-                    
-                    }
 
+Board::display(void){
+	int loc_x = 0;
+	int loc_y = 0;
+
+	// Row loop
+	for(loc_x = 0; loc_x < 8; loc_x++){
+		
+		bool even_row = !((loc_x % 2) & 0x01);
+		bool red;
+		if (even_row)
+			red = true;
+		else
+			red = false;
+		
+		// Column Loop
+		for(loc_y = 0; loc_y < 8; loc_y++){		
+			// Each square takes 10h x 4v characters on screen	
+			for(int i  = 0; i < 4; i++){
+				switch(i){
+					case 1:
+					case 2:
+						// Middle two rows
+						if (self.contains_piece(loc_x,loc_y)){
+							if(self.is_red(loc_x,loc_y)){
+								if(red)
+									cout << bg_red << square_half << bg_yellow <<< is_king(loc_x,loc_y) ? piece_king : piece << bg_red << square_half;
+								else
+									cout << bg_black << square_half << bg_red <<< is_king(loc_x,loc_y) ? piece_king : piece << bg_black << square_half;
+							}
+							else {
+								if(red)
+									cout << bg_red << square_half << bg_yellow <<< is_king(loc_x,loc_y) ? piece_king : piece << bg_red << square_half;
+								else
+									cout << bg_black << square_half << bg_red <<< is_king(loc_x,loc_y) ? piece_king : piece << bg_black << square_half;
+
+							}
+						}
+						// No piece at current location
+						else{
+							if (red)
+								cout << bg_red << square_full;
+							else
+								cout << bg_black << square_full;	
+						}
+
+						break;
+
+					case 0:
+					case 3:
+					default:
+						// Outer two rows 
+						if (red)
+							cout << bg_red << square_full;
+						else
+							cout << bg_black << square_full;
+						break;
+				}
+			}
+			red = !red
+
+		}
+	}
 
 
 }

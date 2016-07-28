@@ -4,7 +4,7 @@
 * ECE469 Artificial Intelligence
 */
 
-#include "main.h"
+#include "../inc/main.h"
 
 using namespace std;
 
@@ -15,6 +15,7 @@ void read_board(ifstream* boardfile){
 void start_game(int red_player, int black_player, int time){
     cout << "To be implemented!" << endl;
 }
+
 
 int getnum(void){
     int x = 0;
@@ -42,6 +43,8 @@ int main(int argc, char** argv){
     
     int red_player,black_player,time;
     int game_mode,load;
+    
+    // Select game mode
     while(1){
         cout << "Please select an option (1-3):" << endl;
         cout << "1. Play as Red" << endl;
@@ -66,6 +69,7 @@ int main(int argc, char** argv){
         black_player = AI;
     }
     cout << endl << endl;
+    
     while(1){
         cout << "Please select an option (1-2):" << endl;
         cout << "1. Load a new game" << endl;
@@ -77,24 +81,33 @@ int main(int argc, char** argv){
         else break;
     }
     
+    current_game = new Game(red_player,black_player);
     cout << endl << endl;
-    if(load == 1)
-        read_board(nullptr);
+
+    // load save file
+    if (load == 1){
+        if(current_game->create_board())
+            cout << "No savefile specified. Loaded new game." << endl;
+        else {
+            cout << "Error creating new game! Exiting." << endl;
+            exit(1);
+        }
+    }
+
     while(load == 2){
         cout << "Enter the location of the board file: ";
         string filename;
         cin >> filename;
-        cout << endl;
-        ifstream boardfile(filename);
+        cout << endl;        
         
-        if(boardfile.is_open()){
-            read_board(&boardfile);
-            break;
+        if (current_game->create_board(filename)){
+            cout << "File loaded." << endl;
         }
         else{
             cout << "Unable to open file! Please make sure the file is valid" << endl;
         }
     }
+
     while(load == 2){
         cout << "Enter time for AI (3-60 in seconds): ";
         time = getnum();
@@ -103,7 +116,5 @@ int main(int argc, char** argv){
         else
             break;
     }
-    system("Color 1A"); 
-    cout << "test";
     start_game(red_player, black_player,time);
 }
