@@ -15,7 +15,9 @@ class Board{
     int board_array[][8];
 
     Board(int new_board[8][8]){
-        std::copy(&new_board[0][0], &new_board[0][0] + 8*8, &board_array[0][0]);
+        std::copy(&new_board[0][0], &new_board[0][0] + 8*8, &(this->board_array[0][0]));
+        std::cerr << "Created new board!" << std::endl;
+        std::cerr << this->board_array[1][1];
     }
     Board() : Board(clean_board) {}
 
@@ -43,7 +45,7 @@ class Board{
 
     bool is_king(int x, int y);
 
-    bool is_red(int x, int y);
+    bool is_red(int x, int y);    
 };
 
 #endif

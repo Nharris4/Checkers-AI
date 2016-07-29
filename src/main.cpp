@@ -4,15 +4,11 @@
 * ECE469 Artificial Intelligence
 */
 
-#include "../inc/main.h"
+#include "main.h"
 
 using namespace std;
 
-void read_board(ifstream* boardfile){
-    cout << "To be implemented!" << endl;
-}
-
-void start_game(int red_player, int black_player, int time){
+void start_game(int red_player, int black_player){
     (current_game->get_game_board())->display();
 }
 
@@ -70,14 +66,14 @@ int main(int argc, char** argv){
     }
     cout << endl << endl;
     
+
     while(1){
         cout << "Please select an option (1-2):" << endl;
         cout << "1. Load a new game" << endl;
         cout << "2. Load game from file" << endl;
-        int load;
         load = getnum();
         if(load <1 || load > 2)
-            cout << "Invalid iniput! Please select again!" << endl;
+            cout << "Invalid input! Please select again!" << endl;
         else break;
     }
     
@@ -86,10 +82,11 @@ int main(int argc, char** argv){
 
     // load save file
     if (load == 1){
+        cout << "Loading new game\n";
         if(current_game->create_board())
-            cout << "No savefile specified. Loaded new game." << endl;
+            cerr << "No savefile specified. Loaded new game." << endl;
         else {
-            cout << "Error creating new game! Exiting." << endl;
+            cerr << "Error creating new game! Exiting." << endl;
             exit(1);
         }
     }
@@ -100,21 +97,27 @@ int main(int argc, char** argv){
         cin >> filename;
         cout << endl;        
         
-        if (current_game->create_board(filename)){
+        if (current_game->create_board(filename.c_str())){
             cout << "File loaded." << endl;
+            break;
         }
         else{
             cout << "Unable to open file! Please make sure the file is valid" << endl;
         }
     }
 
-    while(load == 2){
+    while(load == 1){
         cout << "Enter time for AI (3-60 in seconds): ";
         time = getnum();
         if(time <3 || time > 60)
             cout << "Invalid input! Please try again!" << endl << endl;
-        else
+        else{
+            current_game->set_max_time(time);
             break;
+        }
     }
-    start_game(red_player, black_player,time);
+
+
+
+    start_game(red_player, black_player);
 }

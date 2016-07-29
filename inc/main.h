@@ -27,7 +27,7 @@
 
 Game *current_game;
 
-void start_game(int red_player, int black_player,int time_limit);
+void start_game(int red_player, int black_player);
 
 void init();
  

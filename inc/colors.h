@@ -13,6 +13,8 @@ const std::string fg_white    = "\x1b[30m";
 const std::string fg_black    = "\x1b[37m";
 const std::string cls         = "\033[2J\033[1H";
 const std::string rst         = "\x1b[0m";
+
+
 const std::string square_full = "          ";
 const std::string piece       = "    ";
 const std::string piece_king  = "|^^|"; // 

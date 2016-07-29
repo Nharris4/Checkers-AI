@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++11
+CXXFLAGS=-std=c++11 -Wall -Iinc/
 BIN=checkers.exe
 CXX_DEBUG_FLAGS=-g
 
@@ -8,10 +8,10 @@ SRC=$(wildcard $(SRCDIR)/*.cpp)
 OBJ=$(SRC:%.cpp=%.o)
 
 all: $(OBJ)
-	$(CXX) -o $(BIN) $^
+	$(CXX) -o $(BIN) $+
 
 %.o: %.c %.h
-	$(CXX) $@ -c $^
+	$(CXX) $@ -c $<
 
 
 .PHONY: debug
