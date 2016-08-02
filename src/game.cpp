@@ -1,18 +1,20 @@
 #include "game.h"
 #include "defs.h"
 
-void Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int index) {
+bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int index) {
 	move *m = &(jumplist->at(index));
     //std::vector<move>::iterator m = jumplist->begin()+index =1;
-    std::cout << m->move_count ;
+    //std::cout << m->move_count ;
 	int x = m->path[m->move_count][0];
 	int y = m->path[m->move_count][1];
-	bool more_jumps_exist = false;
-    //std::cout << "Piece at "<<  x << " " << y << "can move ";
+	bool check_jump_ret = false; 
+    bool jump_found = false;
+    //std::cout << "Piece at "<<  x << " " << y <<  std::endl;
     //std::cout << "in check_jump" << std::endl;
     //check north west
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw,brd) && (!(brd->is_red(x,y)) || brd->is_king(x,y))) {
+        jump_found = true;
         std::cerr << "northwest, ";
     	move *new_move = new move;
     	memcpy(new_move,m ,sizeof(move));
@@ -22,14 +24,15 @@ void Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->pieces_taken++;
     	jumplist->push_back(*new_move);
     	Board *b = new Board(brd);
-    	b->move_piece(x,y,x-2,y-2);
+    	bool cnt = b->move_piece(x,y,x-2,y-2);
     	b->remove_piece(x-1,y-1);
-    	check_jump(b,player,jumplist,jumplist->size()-1);
-    	more_jumps_exist = true;
+    	if(!cnt)
+            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
     }
 
     int ne[] = {x-1, y+1};
     if (can_jump(m->path[m->move_count],ne,brd) && (!(brd->is_red(x,y)) || brd->is_king(x,y))) {
+        jump_found = true;
         std::cerr << "northeast, ";
     	move *new_move = new move;
     	memcpy(new_move,m ,sizeof(move));
@@ -39,14 +42,15 @@ void Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->pieces_taken++;
     	jumplist->push_back(*new_move);
     	Board *b = new Board(brd);
-    	b->move_piece(x,y,x-2,y+2);
+    	bool cnt = b->move_piece(x,y,x-2,y+2);
     	b->remove_piece(x-1,y+1);
-    	check_jump(b,player,jumplist,jumplist->size()-1);
-    	more_jumps_exist = true;
+    	if(!cnt)
+            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
     }
 
     int se[] = {x+1, y+1};
     if (can_jump(m->path[m->move_count], se,brd) && ((brd->is_red(x,y)) || brd->is_king(x,y))){
+        jump_found = true;
         std::cerr << "southeast, ";
     	move *new_move = new move;
     	memcpy(new_move,m,sizeof(move));
@@ -56,15 +60,16 @@ void Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->pieces_taken++;
     	jumplist->push_back(*new_move);
     	Board *b = new Board(brd);
-    	b->move_piece(x,y,x+2,y+2);
+    	bool cnt = b->move_piece(x,y,x+2,y+2);
     	b->remove_piece(x+1,y+1);
-    	check_jump(b,player,jumplist,jumplist->size()-1);
-    	more_jumps_exist = true;
+        if(!cnt)
+    	   check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
     }
 
     int sw[] = {x+1, y-1};
     if (can_jump(m->path[m->move_count],sw,brd) && ((brd->is_red(x,y)) || brd->is_king(x,y))){
         std::cerr << "southwest";
+        jump_found = true;
     	move *new_move = new move;
     	memcpy(new_move,m,sizeof(move));
     	new_move->move_count++;
@@ -73,16 +78,22 @@ void Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->pieces_taken++;
     	jumplist->push_back(*new_move);
     	Board *b = new Board(brd);
-    	b->move_piece(x,y,x+2,y-2);
+    	bool cnt = b->move_piece(x,y,x+2,y-2);
     	b->remove_piece(x+1,y-1);
-    	check_jump(b,player,jumplist,jumplist->size()-1);
-    	more_jumps_exist = true;
+    	if(!cnt)
+            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
     }
     //std::cerr << std::endl;
 
-    if(more_jumps_exist)
-    	jumplist->erase(jumplist->begin()+index-1);
+    if(jumplist->at(index).move_count == 0 || jump_found){
+        //std::cout << "Deleting move with move_count " <<jumplist->at(index).move_count << std::endl; 
+    	jumplist->erase(jumplist->begin()+index);
         //std::cout << "No jumps exist from " << x << ", " << y << std::endl;
+    }
+
+    if(jump_found)
+        return true;
+    return false;
 }
 
 bool Game::can_jump(int jumper[2], int jumpee[2], Board *brd){
@@ -106,6 +117,10 @@ void Game::possible_jumps(Board *brd, int player, std::vector<move> *jumplist) {
         	if(brd->contains_piece(x,y) && (redflag == brd->is_red(x,y))){
                 //std::cout << "found " << ((player == RED) ? "red " : "black ") << "piece at " << x << ", " << y << std::endl;
         		move m;
+                for(int i = 0; i < 10; i ++){
+                    m.path[i][0] = 0;
+                    m.path[i][1] = 0;
+                }
         		m.path[0][0] = x;
         		m.path[0][1] = y;
         		m.pieces_taken = 0;

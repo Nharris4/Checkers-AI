@@ -27,7 +27,7 @@ class Game{
     // returns all possible moves of the piece at the specified location
     // if no moves are possible, return null
 
-    void check_jump(Board *brd, int player, std::vector<move> *m, int index);
+    bool check_jump(Board *brd, int player, std::vector<move> *m, int index);
     void check_move(Board *brd, int player, std::vector<move> *m, int index);
     bool can_jump(int jumper[2], int jumpee[2], Board *brd);
 

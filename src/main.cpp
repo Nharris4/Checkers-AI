@@ -57,9 +57,10 @@ void start_game(int red_player, int black_player){
     while(!current_game->check_game_over()){
         int current_player = current_game->get_current_player();
         (current_game->get_game_board())->display();
-        
+        std::cout << "Current player : "  << ((current_player == RED) ? " Red." : " Black.") << std::endl;
         if(((current_player == RED) ? red_player : black_player) != AI ){
             // HUMAN PLAYER
+            
             std::vector<move> movelist;
             current_game->get_moves(current_player,&movelist);
             bool loop = true;

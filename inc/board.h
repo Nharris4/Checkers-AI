@@ -60,10 +60,19 @@ class Board{
 
     bool is_red(int x, int y); 
 
-    void move_piece(int orig_x, int orig_y, int new_x, int new_y){
+    //moves piece from orig_x,orig_y to new_x,new_y.
+    //if piece can be turned into king, it is kinged and move_piece returns true.  else returns false.
+    bool move_piece(int orig_x, int orig_y, int new_x, int new_y){
+        bool king;
+        if(can_king(orig_x,orig_y,new_x,new_y))
+            king = true;
+        else king = false;
         int piece = board_array[orig_x][orig_y];
         board_array[orig_x][orig_y] = 0;
         board_array[new_x][new_y] = piece;
+        if(king)
+            king_me(new_x,new_y);
+        return king;
     }
 
     void remove_piece(int x, int y){
