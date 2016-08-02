@@ -5,51 +5,105 @@
 */
 
 #include "main.h"
-
-using namespace std;
-
-void start_game(int red_player, int black_player){
-    (current_game->get_game_board())->display();
+#include "defs.h"
+void display_moves(std::vector<move> *movelist){
+    int count = 0;
+    for(std::vector<move>::iterator it = movelist->begin(); it!= movelist->end(); it++){
+        count++;
+        std::cout << "(" << count << ") ";
+        for(int i = 0; i <= it->move_count; i++){
+            std::cout << (char)(it->path[i][0] + 'A') << (it->path[i][1]+1);
+            if(i != it->move_count)
+                std::cout << " -> ";
+        }
+        std::cout << std::endl;
+    }
 }
-
 
 int getnum(void){
     int x = 0;
     bool loop = true;
 
     while(loop){
-        string s;
-        getline(cin, s);
-        stringstream stream(s);
+        std::string s;
+        std::getline(std::cin, s);
+        std::stringstream stream(s);
         
         if(stream >> x){
             loop = false;
             continue; 
         }
 
-        cout << "Invalid input! Please input a number!" << endl;
+        std::cout << "Invalid input! Please input a number!" << std::endl;
     }
 
     return x;
 }
+
+void make_move(int move_choice, std::vector<move> *movelist){
+    move m = movelist->at(move_choice -1);
+    if (m.pieces_taken > 0){
+        for(int i = 0; i < m.pieces_taken; i++){
+            current_game->get_game_board()->move_piece(m.path[i][0],m.path[i][1],m.path[i+1][0],m.path[i+1][1]);
+            current_game->get_game_board()->remove_piece( (m.path[i][0] + m.path[i+1][0])/2, (m.path[i][1] + m.path[i+1][1])/2);
+        }
+    }
+    else {
+        current_game->get_game_board()->move_piece(m.path[0][0],m.path[0][1],m.path[1][0],m.path[1][1]);
+    }
+}
+
+void start_game(int red_player, int black_player){
+    while(!current_game->check_game_over()){
+        int current_player = current_game->get_current_player();
+        (current_game->get_game_board())->display();
+        
+        if(((current_player == RED) ? red_player : black_player) != AI ){
+            // HUMAN PLAYER
+            std::vector<move> movelist;
+            current_game->get_moves(current_player,&movelist);
+            bool loop = true;
+            int move_choice;
+            while(loop){
+                display_moves(&movelist);
+                std::cout << "Select move: ";
+                move_choice = getnum();
+                if(move_choice <1 || move_choice > movelist.size()){
+                    std::cout << "Invalid input! Try again." << std::endl;
+                    loop = true;
+                }
+                else loop = false;
+            }
+
+            make_move(move_choice, &movelist);
+            current_game->switch_players();
+        }
+        else {
+            // AI PLAYER
+
+        }
+
+    }
+}
+
 int main(int argc, char** argv){
-    cout << "Checkers" << endl;
-    cout << endl;
-    cout << endl;
+    std::cout << "Checkers" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
     
     int red_player,black_player,time;
     int game_mode,load;
     
     // Select game mode
     while(1){
-        cout << "Please select an option (1-3):" << endl;
-        cout << "1. Play as Red" << endl;
-        cout << "2. Play as Black" << endl;
-        cout << "3. AI vs AI" << endl;
+        std::cout << "Please select an option (1-3):" << std::endl;
+        std::cout << "1. Play as Red" << std::endl;
+        std::cout << "2. Play as Black" << std::endl;
+        std::cout << "3. AI vs AI" << std::endl;
         game_mode = 0;
         game_mode = getnum();
         if(game_mode < 1 || game_mode > 3)
-            cout << "Invalid input!  Please select again!" << endl;
+            std::cout << "Invalid input!  Please select again!" << std::endl;
         else break;
     }
     if (game_mode == 1){
@@ -64,53 +118,54 @@ int main(int argc, char** argv){
         red_player = AI;
         black_player = AI;
     }
-    cout << endl << endl;
+    std::cout << std::endl << std::endl;
     
 
     while(1){
-        cout << "Please select an option (1-2):" << endl;
-        cout << "1. Load a new game" << endl;
-        cout << "2. Load game from file" << endl;
+        std::cout << "Please select an option (1-2):" << std::endl;
+        std::cout << "1. Load a new game" << std::endl;
+        std::cout << "2. Load game from file" << std::endl;
         load = getnum();
         if(load <1 || load > 2)
-            cout << "Invalid input! Please select again!" << endl;
+            std::cout << "Invalid input! Please select again!" << std::endl;
         else break;
     }
     
     current_game = new Game(red_player,black_player);
-    cout << endl << endl;
+    std::cout << std::endl << std::endl;
 
     // load save file
     if (load == 1){
-        cout << "Loading new game\n";
+        std::cout << "Loading new game\n";
+        current_game->set_current_player(RED);
         if(current_game->create_board())
-            cerr << "No savefile specified. Loaded new game." << endl;
+            std::cerr << "No savefile specified. Loaded new game." << std::endl;
         else {
-            cerr << "Error creating new game! Exiting." << endl;
+            std::cerr << "Error creating new game! Exiting." << std::endl;
             exit(1);
         }
     }
 
     while(load == 2){
-        cout << "Enter the location of the board file: ";
-        string filename;
-        cin >> filename;
-        cout << endl;        
+        std::cout << "Enter the location of the board file: ";
+        std::string filename;
+        std::cin >> filename;
+        std::cout << std::endl;        
         
         if (current_game->create_board(filename.c_str())){
-            cout << "File loaded." << endl;
+            std::cout << "File loaded." << std::endl;
             break;
         }
         else{
-            cout << "Unable to open file! Please make sure the file is valid" << endl;
+            std::cout << "Unable to open file! Please make sure the file is valid" << std::endl;
         }
     }
 
     while(load == 1){
-        cout << "Enter time for AI (3-60 in seconds): ";
+        std::cout << "Enter time for AI (3-60 in seconds): ";
         time = getnum();
         if(time <3 || time > 60)
-            cout << "Invalid input! Please try again!" << endl << endl;
+            std::cout << "Invalid input! Please try again!" << std::endl << std::endl;
         else{
             current_game->set_max_time(time);
             break;
@@ -119,5 +174,5 @@ int main(int argc, char** argv){
 
 
 
-    start_game(red_player, black_player);
+    start_game(HUMAN, HUMAN);
 }

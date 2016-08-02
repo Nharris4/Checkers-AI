@@ -7,28 +7,9 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include "../inc/game.h"
-
-#ifndef HUMAN
-#define HUMAN 1
-#endif
-
-#ifndef AI
-#define AI 0
-#endif
-
-#ifndef BLK
-#define BLK 1
-#endif
-
-#ifndef RED
-#define RED 0
-#endif
+#include "game.h"
 
 Game *current_game;
 
-void start_game(int red_player, int black_player);
-
-void init();
  
 #endif

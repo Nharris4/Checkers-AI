@@ -2,7 +2,7 @@
 //ECE 469 AI
 
 #include "board.h"
-#include "colors.h"
+#include "defs.h"
 
 using namespace std;
 
@@ -17,6 +17,19 @@ int Board::clean_board [][8]= {
         {0,2,0,2,0,2,0,2}
     };
 
+bool Board::can_king(int prev_x, int prev_y, int new_x, int new_y){
+	if (prev_x > 4 && contains_piece(prev_x,prev_y) && is_red(prev_x,prev_y) && new_x == 7)
+		return true;
+	if (prev_x < 4 && contains_piece(prev_x,prev_y) && !is_red(prev_x,prev_y) && new_x == 0)
+		return true;
+	return false;
+
+}
+
+void Board::king_me(int x, int y){
+	board_array[x][y]+=2;
+}
+
 // return true if piece is true
 bool Board::is_king(int loc_x, int loc_y){
 	//cerr << this->board_array[loc_x][loc_y];
@@ -29,7 +42,7 @@ bool Board::is_king(int loc_x, int loc_y){
 // return true if piece exists
 bool Board::contains_piece(int loc_x,int loc_y){
 	if (is_valid_pos(loc_x,loc_y))
-		return (this->board_array[loc_x][loc_y] > 0)? true : false;
+		return (this->board_array[loc_x][loc_y] > 0) ? true : false;
 	else return false;
 }
 // return true if piece exists and is red, else return false
@@ -46,6 +59,8 @@ void Board::display(void){
 	int loc_y = 0;
 
 	// Row loop
+	std::cout << cls << endl;
+	std::cout << "         1         2         3          4         5         6         7         8" <<std::endl;
 	for(loc_x = 0; loc_x < 8; loc_x++){
 		bool even_row = ((loc_x % 2) & 0x01);
 		bool red;
@@ -56,7 +71,11 @@ void Board::display(void){
 		
 		// Column Loop
 		for(int i  = 0; i < 4; i++){
-			
+			if(i == 2){
+				char a = 'A';
+				std::cout << " " <<(char)(a+loc_x) <<  "  ";
+			}
+			else std::cout << "    ";
 			for(loc_y = 0; loc_y < 8; loc_y++){		
 
 			// Each square takes 10h x 4v characters on screen	
