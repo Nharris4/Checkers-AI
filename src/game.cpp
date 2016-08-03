@@ -1,5 +1,6 @@
 #include "game.h"
 #include "defs.h"
+#include <cstring>
 
 bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int index) {
 	move *m = &(jumplist->at(index));
@@ -17,7 +18,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
         jump_found = true;
         std::cerr << "northwest, ";
     	move *new_move = new move;
-    	memcpy(new_move,m ,sizeof(move));
+    	std::memcpy(new_move,m ,sizeof(move));
     	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x-2;
     	new_move->path[new_move->move_count][1] = y-2;
@@ -35,7 +36,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
         jump_found = true;
         std::cerr << "northeast, ";
     	move *new_move = new move;
-    	memcpy(new_move,m ,sizeof(move));
+    	std::memcpy(new_move,m ,sizeof(move));
     	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x-2;
     	new_move->path[new_move->move_count][1] = y+2;
@@ -53,7 +54,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
         jump_found = true;
         std::cerr << "southeast, ";
     	move *new_move = new move;
-    	memcpy(new_move,m,sizeof(move));
+    	std::memcpy(new_move,m,sizeof(move));
     	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x+2;
     	new_move->path[new_move->move_count][1] = y+2;
@@ -71,7 +72,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
         std::cerr << "southwest";
         jump_found = true;
     	move *new_move = new move;
-    	memcpy(new_move,m,sizeof(move));
+    	std::memcpy(new_move,m,sizeof(move));
     	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x+2;
     	new_move->path[new_move->move_count][1] = y-2;
