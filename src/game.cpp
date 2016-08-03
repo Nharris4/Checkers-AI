@@ -153,7 +153,9 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
     for(int x = 0; x < 8; x++){
         int y = x%2;
         for(; y < 8; y+=2){
+            //if there is a piece at (x,y) and it belongs to current player
             if((redflag == brd->is_red(x,y)) && brd->contains_piece(x,y)){
+                //if position is valid and (piece is black or king)
                 if(Board::is_valid_pos(x,y) && (!(brd->is_red(x,y)) || brd->is_king(x,y))){
                 	//check ne
                 	if(!(brd->contains_piece(x-1,y-1)) && Board::is_valid_pos(x-1,y-1)){
@@ -182,7 +184,8 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
 
                 	}
                 }
-                else if (Board::is_valid_pos(x,y) && ((brd->is_red(x,y)) || brd->is_king(x,y))){
+                // if current position is valid and (piece is red or king)
+                if (Board::is_valid_pos(x,y) && ( (brd->is_red(x,y)) || brd->is_king(x,y) ) ){
                 	if(!(brd->contains_piece(x+1,y-1)) && Board::is_valid_pos(x+1,y-1)){
                 		move *m = new move;
                 		m->move_count = 1;
