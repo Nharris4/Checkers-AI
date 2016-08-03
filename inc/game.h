@@ -14,7 +14,6 @@ class Game{
     int max_depth;
     int max_time;
     int current_depth;
-    bool gameOver;
 
     int player_1;           // AI flag
     int player_2;           // AI flag
@@ -33,6 +32,8 @@ class Game{
 
 
     public:
+
+    bool gameOver;
 
     Board *game_board;
 
@@ -104,6 +105,7 @@ class Game{
     }
 
     bool check_game_over(void) { return this->gameOver; }
+
     void switch_players(void) {
         if (current_player == RED)
             current_player = BLK;

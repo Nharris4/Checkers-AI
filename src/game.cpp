@@ -16,7 +16,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw,brd) && (!(brd->is_red(x,y)) || brd->is_king(x,y))) {
         jump_found = true;
-        std::cerr << "northwest, ";
+        //std::cerr << "northwest, ";
     	move *new_move = new move;
     	std::memcpy(new_move,m ,sizeof(move));
     	new_move->move_count++;
@@ -34,7 +34,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     int ne[] = {x-1, y+1};
     if (can_jump(m->path[m->move_count],ne,brd) && (!(brd->is_red(x,y)) || brd->is_king(x,y))) {
         jump_found = true;
-        std::cerr << "northeast, ";
+        //std::cerr << "northeast, ";
     	move *new_move = new move;
     	std::memcpy(new_move,m ,sizeof(move));
     	new_move->move_count++;
@@ -52,7 +52,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     int se[] = {x+1, y+1};
     if (can_jump(m->path[m->move_count], se,brd) && ((brd->is_red(x,y)) || brd->is_king(x,y))){
         jump_found = true;
-        std::cerr << "southeast, ";
+        //std::cerr << "southeast, ";
     	move *new_move = new move;
     	std::memcpy(new_move,m,sizeof(move));
     	new_move->move_count++;
@@ -69,7 +69,7 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
 
     int sw[] = {x+1, y-1};
     if (can_jump(m->path[m->move_count],sw,brd) && ((brd->is_red(x,y)) || brd->is_king(x,y))){
-        std::cerr << "southwest";
+        //std::cerr << "southwest";
         jump_found = true;
     	move *new_move = new move;
     	std::memcpy(new_move,m,sizeof(move));
@@ -140,7 +140,7 @@ void Game::possible_jumps(Board *brd, int player, std::vector<move> *jumplist) {
             count++;
         }
         else{
-            std::cout << it->move_count << std::endl;
+            //std::cout << it->move_count << std::endl;
         }
     }
     //std::cout << "Possible jumps: movelist size after removing empty moves: " << jumplist->size() << std::endl;
@@ -148,7 +148,7 @@ void Game::possible_jumps(Board *brd, int player, std::vector<move> *jumplist) {
 }
 
 void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
-    std::cout << "in possible_moves" << std::endl;
+    //std::cout << "in possible_moves" << std::endl;
     bool redflag = (player ==RED)? true:false;
     for(int x = 0; x < 8; x++){
         int y = x%2;

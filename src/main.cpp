@@ -65,6 +65,25 @@ void start_game(int red_player, int black_player){
             current_game->get_moves(current_player,&movelist);
             bool loop = true;
             int move_choice;
+            if (movelist.size() == 0){
+                loop = false;
+                int red_pieces = current_game->get_game_board()->get_red_pieces();
+                int black_pieces = current_game->get_game_board()->get_black_pieces();
+                if(red_pieces == 0){
+                    std::cout << "Black player wins!" << std::endl;
+                    current_game->gameOver = true;
+                    exit(0);
+                }
+                if(black_pieces == 0){
+                    std::cout << "Red player wins!" << std::endl;
+                    current_game->gameOver = true;
+                    exit(0);
+                }
+            }
+            if(!loop){
+                std::cout << "No moves can be made! Skipping turn." << std::endl;
+                current_game->switch_players();
+            }
             while(loop){
                 display_moves(&movelist);
                 std::cout << "Select move: ";

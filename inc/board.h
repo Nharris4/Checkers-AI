@@ -78,6 +78,26 @@ class Board{
     void remove_piece(int x, int y){
         board_array[x][y] = 0;
     }
+
+    int get_red_pieces(void) {
+        int red_pieces = 0;
+        for(int x = 0; x< 8; x++)
+            for(int y = 0; y<8; y++)
+                if(is_valid_pos(x,y) && contains_piece(x,y) && is_red(x,y))
+                    red_pieces++;
+
+        return red_pieces;
+    }
+
+    int get_black_pieces(void) {
+        int black_pieces = 0;
+        for(int x = 0; x< 8; x++)
+            for(int y = 0; y<8; y++)
+                if(is_valid_pos(x,y) && contains_piece(x,y) && (!is_red(x,y)))
+                    black_pieces++;
+
+        return black_pieces;
+    }
 };
 
 #endif
