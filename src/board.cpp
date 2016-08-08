@@ -197,17 +197,20 @@ int64_t Board::alpha_beta(int depth, int64_t alpha, int64_t beta, int max_player
 		for( auto move : movelist_ab) {
 			int64_t v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
 			alpha = std::max(alpha,v);
-			if(beta <= alpha)
+			if(beta <= alpha){
 				break;
+            }
 		}
+
 		return alpha;
 	}
 	else {
 		for(auto move : movelist_ab) {
 			int64_t v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
 			beta = std::min(beta,v);
-			if(beta<= alpha)
+			if(beta<= alpha){
 				break;
+            }
 		}
 
 		return beta;
@@ -285,7 +288,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 	int y = m->path[m->move_count][1];
 	bool check_jump_ret = false; 
     bool jump_found = false;
-    std::cerr << x << y << std::endl;
+    //std::cerr << x << y << std::endl;
     //check north west
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw) && (!(is_red(x,y)) || is_king(x,y))) {
@@ -302,6 +305,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	bool cnt = new_move->b->move_piece(x,y,x-2,y-2);
     	new_move->b->remove_piece(x-1,y-1);
     	jumplist->push_back(*new_move);
+        delete new_move;
 
     	if(!cnt)
             check_jump_ret = new_move->b->check_jump(player,jumplist,jumplist->size()-1);
@@ -322,6 +326,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	new_move->b->remove_piece(x-1,y+1);
 
     	jumplist->push_back(*new_move);
+        delete new_move;
 
     	if(!cnt)
             check_jump_ret = new_move->b->check_jump(player,jumplist,jumplist->size()-1);
@@ -341,6 +346,8 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	bool cnt = new_move->b->move_piece(x,y,x+2,y+2);
     	new_move->b->remove_piece(x+1,y+1);
     	jumplist->push_back(*new_move);
+        delete new_move;
+
         if(!cnt)
     	   check_jump_ret = new_move->b->check_jump(player,jumplist,jumplist->size()-1);
     }
@@ -359,6 +366,8 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	bool cnt = new_move->b->move_piece(x,y,x+2,y-2);
     	new_move->b->remove_piece(x+1,y-1);
         jumplist->push_back(*new_move);
+        delete new_move;
+
 
     	if(!cnt)
             check_jump_ret = new_move->b->check_jump(player,jumplist,jumplist->size()-1);
@@ -406,6 +415,7 @@ void Board::possible_jumps(int player, std::vector<move> *jumplist) {
         		m->pieces_taken = 0;
         		m->move_count = 0;
                 jumplist->push_back(*m);
+                delete m;
                 check_jump(player,jumplist,jumplist->size()-1);
         	}
         }
@@ -448,6 +458,7 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 		m->b = new Board(this);
                 		m->b->move_piece(x,y,x-1,y-1);
                 		movelist->push_back(*m);
+                        delete m;
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
 
@@ -463,6 +474,7 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 		m->b = new Board(this);
                 		m->b->move_piece(x,y,x-1,y+1);
                         movelist->push_back(*m);
+                        delete m;
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
 
                 	}
@@ -480,6 +492,7 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 		m->b = new Board(this);
                 		m->b->move_piece(x,y,x+1,y-1);
                         movelist->push_back(*m);
+                        delete m;
 
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
@@ -494,6 +507,7 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 		m->b = new Board(this);
                 		m->b->move_piece(x,y,x+1,y+1);
                         movelist->push_back(*m);
+                        delete m;
                         //std::cout << "found move: " << x <<  " " << y << std::endl;            	
                     }
                 }
