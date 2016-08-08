@@ -111,6 +111,11 @@ class Game{
             current_player = BLK;
         else current_player = RED;
     }
+
+    int get_other_player(void) { return (current_player == RED) ? BLK : RED; }
+    static int get_other_player(int player) { return (player == RED) ? BLK : RED; }
+
+    void AI_turn();
 };
 
 

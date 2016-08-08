@@ -2,7 +2,7 @@
 #define DEFS_H_
 
 	#include <string>
-
+	//#include "board.h"
 	// ANSI escape color codes 
 	// Definitions used for displaying the board
 	const std::string bg_white    = "\x1b[47m";
@@ -36,11 +36,5 @@
 	#ifndef RED
 	#define RED 0
 	#endif
-
-	typedef struct move {
-	    int path[10][2];
-	    int pieces_taken;
-	    int move_count;
-	} move;
 
 #endif

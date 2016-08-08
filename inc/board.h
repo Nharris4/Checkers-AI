@@ -6,6 +6,18 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <vector>
+#include "defs.h"
+
+class Board;
+
+typedef struct move {
+    int path[10][2];
+    int pieces_taken;
+    int move_count;
+    Board *b;
+} move;
+
 
 class Board{
     private:
@@ -29,7 +41,6 @@ class Board{
                 this->board_array[x][y] = brd->board_array[x][y];
             }
         }
-
     }
 
     Board() : Board(clean_board) {}
@@ -98,6 +109,19 @@ class Board{
 
         return black_pieces;
     }
+
+    int iterative_deepening(int minmax_player, std::vector<move> *movelist, move &best_move, bool &trigger);
+    bool start_alpha_beta(int depth, int max_player, std::vector<move> *movelist, move &best_move, bool &trigger);
+    int alpha_beta(int depth,int alpha, int beta, int max_player, int , bool &trigger, bool &hit_max_depth);
+    int64_t evaluate(int max_player);
+
+    void get_moves(int curr_player, std::vector<move> *movelist_ab);
+    void possible_jumps(int player, std::vector<move> *jumplist);
+    void possible_moves(int player, std::vector<move> *jumplist);
+    bool check_jump(int player,  std::vector<move> *jumplist, int index);
+    bool can_jump(int[],int[]);
+
+
 };
 
 #endif

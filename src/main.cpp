@@ -100,7 +100,9 @@ void start_game(int red_player, int black_player){
         }
         else {
             // AI PLAYER
-
+            std::cout << "AI is thinking..." << std::endl;
+            current_game->AI_turn();
+            current_game->switch_players();
         }
 
     }
@@ -194,5 +196,5 @@ int main(int argc, char** argv){
 
 
 
-    start_game(HUMAN, HUMAN);
+    start_game(red_player, black_player);
 }

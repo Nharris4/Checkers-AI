@@ -1,6 +1,10 @@
 #include "game.h"
 #include "defs.h"
+#include "board.h"
 #include <cstring>
+#include <chrono>
+#include <thread>
+
 
 bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int index) {
 	move *m = &(jumplist->at(index));
@@ -16,19 +20,20 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw,brd) && (!(brd->is_red(x,y)) || brd->is_king(x,y))) {
         jump_found = true;
-        //std::cerr << "northwest, ";
     	move *new_move = new move;
-    	std::memcpy(new_move,m ,sizeof(move));
+    	std::memcpy(new_move,m ,sizeof(move));    
     	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x-2;
     	new_move->path[new_move->move_count][1] = y-2;
     	new_move->pieces_taken++;
-    	jumplist->push_back(*new_move);
-    	Board *b = new Board(brd);
-    	bool cnt = b->move_piece(x,y,x-2,y-2);
-    	b->remove_piece(x-1,y-1);
+    	new_move->b = new Board(brd);
+    	bool cnt = new_move->b->move_piece(x,y,x-2,y-2);
+    	new_move->b->remove_piece(x-1,y-1);
+
+        jumplist->push_back(*new_move);
+
     	if(!cnt)
-            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
+            check_jump_ret = check_jump(new_move->b,player,jumplist,jumplist->size()-1);
     }
 
     int ne[] = {x-1, y+1};
@@ -41,12 +46,13 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->path[new_move->move_count][0] = x-2;
     	new_move->path[new_move->move_count][1] = y+2;
     	new_move->pieces_taken++;
-    	jumplist->push_back(*new_move);
-    	Board *b = new Board(brd);
-    	bool cnt = b->move_piece(x,y,x-2,y+2);
-    	b->remove_piece(x-1,y+1);
+    	new_move->b = new Board(brd);
+    	bool cnt = new_move->b->move_piece(x,y,x-2,y+2);
+    	new_move->b->remove_piece(x-1,y+1);
+        jumplist->push_back(*new_move);
+
     	if(!cnt)
-            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
+            check_jump_ret = check_jump(new_move->b,player,jumplist,jumplist->size()-1);
     }
 
     int se[] = {x+1, y+1};
@@ -59,12 +65,13 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->path[new_move->move_count][0] = x+2;
     	new_move->path[new_move->move_count][1] = y+2;
     	new_move->pieces_taken++;
-    	jumplist->push_back(*new_move);
-    	Board *b = new Board(brd);
-    	bool cnt = b->move_piece(x,y,x+2,y+2);
-    	b->remove_piece(x+1,y+1);
+    	new_move->b= new Board(brd);
+    	bool cnt = new_move->b->move_piece(x,y,x+2,y+2);
+    	new_move->b->remove_piece(x+1,y+1);
+        jumplist->push_back(*new_move);
+
         if(!cnt)
-    	   check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
+    	   check_jump_ret = check_jump(new_move->b,player,jumplist,jumplist->size()-1);
     }
 
     int sw[] = {x+1, y-1};
@@ -77,12 +84,11 @@ bool Game::check_jump(Board *brd, int player,  std::vector<move> *jumplist, int 
     	new_move->path[new_move->move_count][0] = x+2;
     	new_move->path[new_move->move_count][1] = y-2;
     	new_move->pieces_taken++;
-    	jumplist->push_back(*new_move);
-    	Board *b = new Board(brd);
-    	bool cnt = b->move_piece(x,y,x+2,y-2);
-    	b->remove_piece(x+1,y-1);
+    	new_move->b = new Board(brd);
+    	bool cnt = new_move->b->move_piece(x,y,x+2,y-2);
+    	new_move->b->remove_piece(x+1,y-1);
     	if(!cnt)
-            check_jump_ret = check_jump(b,player,jumplist,jumplist->size()-1);
+            check_jump_ret = check_jump(new_move->b,player,jumplist,jumplist->size()-1);
     }
     //std::cerr << std::endl;
 
@@ -166,6 +172,8 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
                 		m->path[1][0] = x-1;
                 		m->path[1][1] = y-1;
                 		m->pieces_taken = 0;
+                        m->b = new Board(brd);
+                        m->b->move_piece(x,y,m->path[1][0],m->path[1][1]);
                 		movelist->push_back(*m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
@@ -179,6 +187,8 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
                 		m->path[1][0] = x-1;
                 		m->path[1][1] = y+1;
                 		m->pieces_taken = 0;
+                        m->b = new Board(brd);
+                        m->b->move_piece(x,y,m->path[1][0],m->path[1][1]);
                         movelist->push_back(*m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
 
@@ -194,6 +204,8 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
                 		m->path[1][0] = x+1;
                 		m->path[1][1] = y-1;
                 		m->pieces_taken = 0;
+                        m->b = new Board(brd);
+                        m->b->move_piece(x,y,m->path[1][0],m->path[1][1]);
                         movelist->push_back(*m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
@@ -205,6 +217,8 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
                 		m->path[1][0] = x+1;
                 		m->path[1][1] = y+1;
                 		m->pieces_taken = 0;
+                        m->b = new Board(brd);
+                        m->b->move_piece(x,y,m->path[1][0],m->path[1][1]);
                         movelist->push_back(*m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;            	
                     }
@@ -213,3 +227,70 @@ void Game::possible_moves(Board *brd, int player, std::vector<move> *movelist){
         }
     }
 }
+
+void timer(bool *trigger, float search_time){
+    const float slack = 0.1; // set trigger 100ms before search_time
+    std::cout << "Starting timer! " << std::endl;
+    int count = 0;
+    auto start_time = std::chrono::high_resolution_clock::now();
+    while(!(*trigger)){
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto diff_time = 1e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+        if( diff_time > (search_time - slack)){
+            *trigger = true;
+            std::cout << "timer expired!" << std::endl;
+        }
+        count = count +1;
+    }
+}
+
+
+void Game::AI_turn(){
+    std::vector<move> movelist;
+    move best_move;
+    game_board->get_moves(current_player,&movelist);
+    std::cout<< "Got moves" << std::endl;
+    if(movelist.size() == 1){
+        std::cout << "Only one move to be made." << std::endl;
+        best_move = movelist.front();
+    }
+    else if(movelist.size() == 0){
+        std::cout << "No moves available." << std::endl;
+        int black_pieces = game_board->get_black_pieces();
+        int red_pieces = game_board->get_red_pieces();
+        if( black_pieces == 0){
+            std::cout << "Red player wins!" << std::endl;
+            exit(0);
+        }
+        if ( red_pieces == 0){
+            std::cout << "Black player wins!" << std::endl;
+            exit(0);
+        }
+    }
+    else {
+        std::cout << "Movelist size: " << movelist.size() << std::endl;
+        bool timer_trigger = false;
+        std::thread timer_thread(timer, &timer_trigger, max_time);
+        auto start_time = std::chrono::high_resolution_clock::now();
+        
+        int depth = game_board->iterative_deepening(current_player,&movelist,best_move,timer_trigger);
+        
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto diff = 1e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+        timer_thread.join();
+
+        if (depth == 0 ){
+            std::cout << "AI wasn't able to search the root depth in the allocated time" << std::endl;
+            best_move = movelist.at(rand() % movelist.size());
+        }
+        else {
+            std::cout << "Searched to depth " << depth << "in " << diff << "seconds" <<std::endl;
+        }
+    }
+    std::cout << "found best move" << std::endl;
+    game_board = best_move.b;
+    std::cout << "Press enter to continue" << std::endl;
+    std::cin.get();
+}
+
