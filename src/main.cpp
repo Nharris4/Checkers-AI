@@ -184,9 +184,13 @@ int main(int argc, char** argv){
         else{
             std::cout << "Unable to open file! Please make sure the file is valid" << std::endl;
         }
+	char ch;
+	while((ch=getchar()) != EOF && ch !='\n')
+		;
     }
 
     while(load == 1){
+	current_game->set_current_player(RED);
         std::cout << "Enter time for AI (3-60 in seconds): ";
         time = getnum();
         if(time <3 || time > 60)
@@ -197,8 +201,5 @@ int main(int argc, char** argv){
         }
     }
 
-    char ch;
-    while ((ch=getchar()) != EOF && ch != '\n')
-        ;
     start_game(red_player, black_player);
 }

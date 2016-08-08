@@ -8,10 +8,10 @@ SRC=$(wildcard $(SRCDIR)/*.cpp)
 OBJ=$(SRC:%.cpp=%.o)
 
 all: $(OBJ)
-	$(CXX) -o $(BIN) $+
+	$(CXX) -o $(BIN) $+ -pthread
 
 %.o: %.c %.h
-	$(CXX) $@ -c $<
+	$(CXX) $@ -c $< -pthread
 
 
 .PHONY: debug

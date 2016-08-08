@@ -6,6 +6,7 @@
 #include <limits>
 #include <vector>
 #include <cstdint>
+#include <cstring>
 
 //using namespace std;
 int Board::clean_board [][8]= {
