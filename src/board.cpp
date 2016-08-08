@@ -285,7 +285,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 	int y = m->path[m->move_count][1];
 	bool check_jump_ret = false; 
     bool jump_found = false;
-
+    std::cerr << x << y << std::endl;
     //check north west
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw) && (!(is_red(x,y)) || is_king(x,y))) {
