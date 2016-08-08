@@ -120,7 +120,7 @@ class Board{
     void possible_jumps(int player, std::vector<move> *jumplist);
     void possible_moves(int player, std::vector<move> *jumplist);
     bool check_jump(int player,  std::vector<move> *jumplist, int index);
-    bool can_jump(int[],int[]);
+    bool can_jump(int *a ,int *b);
 
 
 };
