@@ -26,11 +26,6 @@ class Game{
     // returns all possible moves of the piece at the specified location
     // if no moves are possible, return null
 
-    bool check_jump(Board *brd, int player, std::vector<move> *m, int index);
-    void check_move(Board *brd, int player, std::vector<move> *m, int index);
-    bool can_jump(int jumper[2], int jumpee[2], Board *brd);
-
-
     public:
 
     bool gameOver;
@@ -80,6 +75,7 @@ class Game{
                 }
 
                 savefile >> this->current_player;
+                this->current_player-=1;
                 savefile >> this->max_time;
             }
             else {
@@ -93,14 +89,11 @@ class Game{
 
     Board* get_game_board(void){ return game_board; }
 
-    void possible_moves(Board *brd, int player,std::vector<move> *movelist);
-
-    void possible_jumps(Board *brd, int player,std::vector<move> *jumplist);
 
     void get_moves(int player,std::vector<move> *movelist){
-        possible_jumps(game_board,player,movelist);
+        game_board->possible_jumps(player,movelist);
         if (movelist->size() == 0)
-            possible_moves(game_board,player,movelist);
+            game_board->possible_moves(player,movelist);
 
     }
 

@@ -49,6 +49,7 @@ void make_move(int move_choice, std::vector<move> *movelist){
         }
     }
     else {
+        std::cout << "Moving piece..." << std::endl;
         current_game->get_game_board()->move_piece(m.path[0][0],m.path[0][1],m.path[1][0],m.path[1][1]);
     }
 }
@@ -58,6 +59,7 @@ void start_game(int red_player, int black_player){
         int current_player = current_game->get_current_player();
         (current_game->get_game_board())->display();
         std::cout << "Current player : "  << ((current_player == RED) ? " Red." : " Black.") << std::endl;
+        
         if(((current_player == RED) ? red_player : black_player) != AI ){
             // HUMAN PLAYER
             
@@ -81,8 +83,9 @@ void start_game(int red_player, int black_player){
                 }
             }
             if(!loop){
-                std::cout << "No moves can be made! Skipping turn." << std::endl;
-                current_game->switch_players();
+                std::cout << "No moves can be made!" << std::endl;
+                std::cout << ( current_game->get_other_player((current_game->get_current_player())  == RED) ? "Red " : "Black " ) << "Player wins!" << std::endl;
+                exit(0);
             }
             while(loop){
                 display_moves(&movelist);
@@ -94,7 +97,7 @@ void start_game(int red_player, int black_player){
                 }
                 else loop = false;
             }
-
+            
             make_move(move_choice, &movelist);
             current_game->switch_players();
         }
@@ -119,8 +122,8 @@ int main(int argc, char** argv){
     // Select game mode
     while(1){
         std::cout << "Please select an option (1-3):" << std::endl;
-        std::cout << "1. Play as Red" << std::endl;
-        std::cout << "2. Play as Black" << std::endl;
+        std::cout << "1. Play as Red (Player 1)" << std::endl;
+        std::cout << "2. Play as Black (Player 2)" << std::endl;
         std::cout << "3. AI vs AI" << std::endl;
         game_mode = 0;
         game_mode = getnum();
@@ -159,7 +162,7 @@ int main(int argc, char** argv){
     // load save file
     if (load == 1){
         std::cout << "Loading new game\n";
-        current_game->set_current_player(RED);
+        //current_game->set_current_player(RED);
         if(current_game->create_board())
             std::cerr << "No savefile specified. Loaded new game." << std::endl;
         else {
@@ -194,7 +197,8 @@ int main(int argc, char** argv){
         }
     }
 
-
-
+    char ch;
+    while ((ch=getchar()) != EOF && ch != '\n')
+        ;
     start_game(red_player, black_player);
 }

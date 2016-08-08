@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include "defs.h"
+#include <cstdint>
 
 class Board;
 
@@ -112,7 +113,7 @@ class Board{
 
     int iterative_deepening(int minmax_player, std::vector<move> *movelist, move &best_move, bool &trigger);
     bool start_alpha_beta(int depth, int max_player, std::vector<move> *movelist, move &best_move, bool &trigger);
-    int alpha_beta(int depth,int alpha, int beta, int max_player, int , bool &trigger, bool &hit_max_depth);
+    int64_t alpha_beta(int depth,int64_t alpha, int64_t beta, int max_player, int , bool &trigger, bool &hit_max_depth);
     int64_t evaluate(int max_player);
 
     void get_moves(int curr_player, std::vector<move> *movelist_ab);

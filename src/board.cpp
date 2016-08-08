@@ -152,15 +152,15 @@ int Board::iterative_deepening(int max_player, std::vector<move> *movelist, move
 }
 
 bool Board::start_alpha_beta(int depth, int max_player,std::vector<move> *movelist,move &best_move, bool &trigger){
-	int alpha = std::numeric_limits<int>::min();
-	int beta  = std::numeric_limits<int>::max();
-	int best  = std::numeric_limits<int>::min();
+	int64_t alpha = std::numeric_limits<int64_t>::min();
+	int64_t beta  = std::numeric_limits<int64_t>::max();
+	int64_t best  = std::numeric_limits<int64_t>::min();
 
 	bool hit_max_depth = false;
 
 	for(std::vector<move>::iterator it = movelist->begin(); it != movelist->end(); it++){
 		//std::cout << "THIS(start_alpha_beta): " << it->b << std::endl;
-		int v = it->b->alpha_beta(depth-1, alpha, beta, max_player, (max_player == RED) ? BLK : RED, trigger, hit_max_depth);
+		int64_t v = it->b->alpha_beta(depth-1, alpha, beta, max_player, (max_player == RED) ? BLK : RED, trigger, hit_max_depth);
 		if( v > best){
 			best = v;
 			alpha = v;
@@ -173,7 +173,7 @@ bool Board::start_alpha_beta(int depth, int max_player,std::vector<move> *moveli
 	return hit_max_depth;
 }
 
-int Board::alpha_beta(int depth, int alpha, int beta, int max_player, int curr_player, bool &trigger, bool &hit_max_depth){
+int64_t Board::alpha_beta(int depth, int64_t alpha, int64_t beta, int max_player, int curr_player, bool &trigger, bool &hit_max_depth){
 	if(trigger)
 		return 0;
 
@@ -188,13 +188,13 @@ int Board::alpha_beta(int depth, int alpha, int beta, int max_player, int curr_p
 
 	if(movelist_ab.size() == 0){
 		if(curr_player == max_player)
-			return std::numeric_limits<int>::lowest();
-		return std::numeric_limits<int>::max();
+			return std::numeric_limits<int64_t>::lowest();
+		return std::numeric_limits<int64_t>::max();
 	}
 
 	if (curr_player == max_player){
 		for( auto move : movelist_ab) {
-			int v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
+			int64_t v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
 			alpha = std::max(alpha,v);
 			if(beta <= alpha)
 				break;
@@ -203,7 +203,7 @@ int Board::alpha_beta(int depth, int alpha, int beta, int max_player, int curr_p
 	}
 	else {
 		for(auto move : movelist_ab) {
-			int v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
+			int64_t v = move.b->alpha_beta(depth-1,alpha,beta,max_player,get_other_player(curr_player),trigger,hit_max_depth);
 			beta = std::min(beta,v);
 			if(beta<= alpha)
 				break;
@@ -219,7 +219,7 @@ int64_t Board::evaluate(int max_player){
     int64_t value = 0;
 
     const int king_weight = 5;
-    const int base_weight = 3;
+    const int base_weight = 2;
     int red_base_pieces[8] = {0};
     int black_base_pieces[8] = {0};
 
@@ -247,11 +247,13 @@ int64_t Board::evaluate(int max_player){
         }
     }
     // score based on piece count
-    value += (king_weight * (red_kings - black_kings) + base_weight * (red_pawns - black_pawns)) * 1e9;
+    value += (king_weight * (red_kings - black_kings) + base_weight * (red_pawns - black_pawns)) * 1e6;
     
     // score based on how many pieces are close to being kinged 
     int64_t temp = 0;
-    temp += (red_base_pieces[0] - black_base_pieces[7]) * 8;
+
+    // weight home row heavily so the AI prefers not to move them
+    temp += (red_base_pieces[0] - black_base_pieces[7]) * 30;
     temp += (red_base_pieces[1] - black_base_pieces[6]) * 5;
     
     for(int x = 2; x < 7; x++){
@@ -259,14 +261,13 @@ int64_t Board::evaluate(int max_player){
         temp -= black_base_pieces[7-x] * x;
     }
 
-    value += temp * 1e6;
+    value += temp * 1e2;
 
     //score based on # of pieces
-    value += (red_kings + red_pawns - black_kings - black_pawns) * 1e3;
+    value += (red_kings + red_pawns - black_kings - black_pawns) * 1e4;
 
     value += rand() % 1000;
-
-    return value;
+    return ((max_player == RED ) ? value : -value);
 }
 
 void Board::get_moves(int player, std::vector<move> *movelist){
