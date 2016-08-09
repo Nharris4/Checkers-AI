@@ -298,7 +298,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 
 	bool check_jump_ret = false; 
     bool jump_found = false;
-    //std::cerr << x << y << std::endl;
+
     //check north west
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw) && (!(is_red(x,y)) || is_king(x,y))) {
@@ -307,7 +307,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move, m, x-2, y-2);
-        new_move.b = new Board(this);
+        new_move.b = new Board(m->b);
 
     	bool cnt = new_move.b->move_piece(x,y,x-2,y-2);
     	new_move.b->remove_piece(x-1,y-1);
@@ -327,7 +327,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move, m, x-2, y+2);
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x-2,y+2);
     	new_move.b->remove_piece(x-1,y+1);
 
@@ -346,7 +346,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 
         make_jump(&new_move,m,x+2,y+2);
 
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x+2,y+2);
     	new_move.b->remove_piece(x+1,y+1);
     	jumplist->push_back(new_move);
@@ -363,7 +363,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move,m,x+2,y-2);
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x+2,y-2);
     	new_move.b->remove_piece(x+1,y-1);
         jumplist->push_back(new_move);
@@ -388,8 +388,11 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 inline bool Board::can_jump(int *jumper, int *jumpee){
 	int x_dir = jumpee[0] - jumper[0];
 	int y_dir = jumpee[1] - jumper[1];
+    // if no piece in location the piece is jumping to
 	if(!(contains_piece(jumper[0] + (2*x_dir), jumper[1]+ (2*y_dir)))) {
+        // and if the piece being jumped is not on the same team
 		if(is_red(jumper[0],jumper[1]) != is_red(jumpee[0],jumpee[1]) && contains_piece(jumpee[0],jumpee[1]))
+            // and if the place being jumped to and the place being jumped over and the place being jumped from are valid positions
 			if(is_valid_pos(jumper[0],jumper[1]) && is_valid_pos(jumpee[0],jumpee[1]) && is_valid_pos(jumper[0] + (2*x_dir), jumper[1]+ (2*y_dir)))
                 return true;
 	}
@@ -416,7 +419,7 @@ void Board::possible_jumps(int player, std::vector<move> *jumplist) {
         		m.move_count = 0;
                 jumplist->push_back(m);
                 //delete m;
-                std::cout << "x: " << x << " y: " << y << " move_count: " << m.move_count << std::endl;
+                std::cout << "POSSIBLE JUMPS:  x: " << x << " y: " << y << " move_count: " << m.move_count << std::endl;
                 check_jump(player,jumplist,jumplist->size()-1);
         	}
         }
@@ -449,33 +452,31 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 if(is_valid_pos(x,y) && (!(is_red(x,y)) || is_king(x,y))){
                 	//check ne
                 	if(!(contains_piece(x-1,y-1)) && is_valid_pos(x-1,y-1)){
-                		move *m = new move;
-                		m->move_count = 1;
-                		m->path[0][0] = x;
-                		m->path[0][1] = y;
-                		m->path[1][0] = x-1;
-                		m->path[1][1] = y-1;
-                		m->pieces_taken = 0;
-                		m->b = new Board(this);
-                		m->b->move_piece(x,y,x-1,y-1);
-                		movelist->push_back(*m);
-                        delete m;
+                		move m;
+                		m.move_count = 1;
+                		m.path[0][0] = x;
+                		m.path[0][1] = y;
+                		m.path[1][0] = x-1;
+                		m.path[1][1] = y-1;
+                		m.pieces_taken = 0;
+                		m.b = new Board(this);
+                		m.b->move_piece(x,y,x-1,y-1);
+                		movelist->push_back(m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
 
                 	//check nw
                 	if(!(contains_piece(x-1,y+1)) && is_valid_pos(x-1,y+1)){
-                		move *m = new move;
-                		m->move_count = 1;
-                		m->path[0][0] = x;
-                		m->path[0][1] = y;
-                		m->path[1][0] = x-1;
-                		m->path[1][1] = y+1;
-                		m->pieces_taken = 0;
-                		m->b = new Board(this);
-                		m->b->move_piece(x,y,x-1,y+1);
-                        movelist->push_back(*m);
-                        delete m;
+                		move m;
+                		m.move_count = 1;
+                		m.path[0][0] = x;
+                		m.path[0][1] = y;
+                		m.path[1][0] = x-1;
+                		m.path[1][1] = y+1;
+                		m.pieces_taken = 0;
+                		m.b = new Board(this);
+                		m.b->move_piece(x,y,x-1,y+1);
+                        movelist->push_back(m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
 
                 	}
@@ -483,32 +484,30 @@ void Board::possible_moves(int player, std::vector<move> *movelist){
                 // if current position is valid and (piece is red or king)
                 if (is_valid_pos(x,y) && ( (is_red(x,y)) || is_king(x,y) ) ){
                 	if(!(contains_piece(x+1,y-1)) && is_valid_pos(x+1,y-1)){
-                		move *m = new move;
-                		m->move_count = 1;
-                		m->path[0][0] = x;
-                		m->path[0][1] = y;
-                		m->path[1][0] = x+1;
-                		m->path[1][1] = y-1;
-                		m->pieces_taken = 0;
-                		m->b = new Board(this);
-                		m->b->move_piece(x,y,x+1,y-1);
-                        movelist->push_back(*m);
-                        delete m;
+                		move m;
+                		m.move_count = 1;
+                		m.path[0][0] = x;
+                		m.path[0][1] = y;
+                		m.path[1][0] = x+1;
+                		m.path[1][1] = y-1;
+                		m.pieces_taken = 0;
+                		m.b = new Board(this);
+                		m.b->move_piece(x,y,x+1,y-1);
+                        movelist->push_back(m);
 
                         //std::cout << "found move: " << x <<  " " << y << std::endl;
                 	}
                 	if(!(contains_piece(x+1,y+1)) && is_valid_pos(x+1,y+1)){
-                		move *m = new move;
-                		m->move_count = 1;
-                		m->path[0][0] = x;
-                		m->path[0][1] = y;
-                		m->path[1][0] = x+1;
-                		m->path[1][1] = y+1;
-                		m->pieces_taken = 0;
-                		m->b = new Board(this);
-                		m->b->move_piece(x,y,x+1,y+1);
-                        movelist->push_back(*m);
-                        delete m;
+                		move m;
+                		m.move_count = 1;
+                		m.path[0][0] = x;
+                		m.path[0][1] = y;
+                		m.path[1][0] = x+1;
+                		m.path[1][1] = y+1;
+                		m.pieces_taken = 0;
+                		m.b = new Board(this);
+                		m.b->move_piece(x,y,x+1,y+1);
+                        movelist->push_back(m);
                         //std::cout << "found move: " << x <<  " " << y << std::endl;            	
                     }
                 }
