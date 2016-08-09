@@ -25,6 +25,15 @@ void timer(bool *trigger, float search_time){
     }
 }
 
+void print_move(move m){
+    for(int i = 0; i <= m.move_count; i++){
+        std::cout << (char)(m.path[i][0] + 'A') << (m.path[i][1] + 1);
+        if(i != m.move_count)
+            std::cout << " ->";
+    }
+    std::cout << std::endl;
+
+}
 
 void Game::AI_turn(){
     std::vector<move> movelist;
@@ -69,6 +78,7 @@ void Game::AI_turn(){
         }
     }
     std::cout << "found best move" << std::endl;
+    print_move(best_move);
     game_board = best_move.b;
     std::cout << "Press enter to continue" << std::endl;
     std::cin.get();

@@ -46,7 +46,7 @@ class Board{
 
     Board() : Board(clean_board) {}
 
-    ~Board();
+    ~Board(){}
     
     // returns true if the position (i,j) is within the board
     static bool is_valid_pos(int i, int j){

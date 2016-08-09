@@ -193,7 +193,7 @@ int main(int argc, char** argv){
 	current_game->set_current_player(RED);
         std::cout << "Enter time for AI (3-60 in seconds): ";
         time = getnum();
-        if(time <3 || time > 60)
+        if(time <1 || time > 60)
             std::cout << "Invalid input! Please try again!" << std::endl << std::endl;
         else{
             current_game->set_max_time(time);
