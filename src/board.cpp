@@ -385,7 +385,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     return false;
 }
 
-bool Board::can_jump(int *jumper, int *jumpee){
+inline bool Board::can_jump(int *jumper, int *jumpee){
 	int x_dir = jumpee[0] - jumper[0];
 	int y_dir = jumpee[1] - jumper[1];
 	if(!(contains_piece(jumper[0] + (2*x_dir), jumper[1]+ (2*y_dir)))) {
