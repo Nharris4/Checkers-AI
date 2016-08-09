@@ -312,13 +312,15 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	jumplist->push_back(*new_move);
         delete new_move;
 
-    	if(!cnt)
+    	if(!cnt){
+            printf("x: %d y: %d",x-2,y-2);
             check_jump_ret = new_move->b->check_jump(player,jumplist,jumplist->size()-1);
+        }
     }
 
     int ne[] = {x-1, y+1};
     if (can_jump(m->path[m->move_count],ne) && (!(is_red(x,y)) || is_king(x,y))) {
-        printf("ne");
+        printf("ne ");
         jump_found = true;
         //std::cerr << "northeast, ";
     	move *new_move = new move;
