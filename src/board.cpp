@@ -283,7 +283,7 @@ void Board::get_moves(int player, std::vector<move> *movelist){
 
 
 bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
-    printf("%d\n",index );
+    printf("index: %d move_count: %d\n",index );
 	move *m = &(jumplist->at(index));
 	int x = m->path[m->move_count][0];
 	int y = m->path[m->move_count][1];
@@ -296,7 +296,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
         jump_found = true;
     	move *new_move = new move;
         *new_move = *m;
-    	new_move->move_count ++;
+    	new_move->move_count++;
     	new_move->path[new_move->move_count][0] = x-2;
     	new_move->path[new_move->move_count][1] = y-2;
     	new_move->pieces_taken++;
@@ -415,7 +415,7 @@ void Board::possible_jumps(int player, std::vector<move> *jumplist) {
         		m->pieces_taken = 0;
         		m->move_count = 0;
                 jumplist->push_back(*m);
-                delete m;
+                //delete m;
                 check_jump(player,jumplist,jumplist->size()-1);
         	}
         }
