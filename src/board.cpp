@@ -298,7 +298,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 
 	bool check_jump_ret = false; 
     bool jump_found = false;
-    //std::cerr << x << y << std::endl;
+
     //check north west
     int nw[] = {x-1, y-1};
     if (can_jump(m->path[m->move_count],nw) && (!(is_red(x,y)) || is_king(x,y))) {
@@ -307,7 +307,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move, m, x-2, y-2);
-        new_move.b = new Board(this);
+        new_move.b = new Board(m->b);
 
     	bool cnt = new_move.b->move_piece(x,y,x-2,y-2);
     	new_move.b->remove_piece(x-1,y-1);
@@ -327,7 +327,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move, m, x-2, y+2);
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x-2,y+2);
     	new_move.b->remove_piece(x-1,y+1);
 
@@ -346,7 +346,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
 
         make_jump(&new_move,m,x+2,y+2);
 
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x+2,y+2);
     	new_move.b->remove_piece(x+1,y+1);
     	jumplist->push_back(new_move);
@@ -363,7 +363,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     	move new_move;
 
         make_jump(&new_move,m,x+2,y-2);
-    	new_move.b = new Board(this);
+    	new_move.b = new Board(m->b);
     	bool cnt = new_move.b->move_piece(x,y,x+2,y-2);
     	new_move.b->remove_piece(x+1,y-1);
         jumplist->push_back(new_move);
