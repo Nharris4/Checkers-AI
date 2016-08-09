@@ -291,7 +291,7 @@ inline void make_jump(move *new_move, move* original,int new_x, int new_y){
 
 bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     move *m = &(jumplist->at(index));
-    printf("index: %d move_count: %d\n",index, m->move_count);
+    printf("check_jump: index: %d move_count: %d\n",index, m->move_count);
 	int x = m->path[m->move_count][0];
 	int y = m->path[m->move_count][1];
     printf("x: %d y: %d\n",x,y);
