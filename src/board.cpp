@@ -294,7 +294,7 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     printf("index: %d move_count: %d\n",index, m->move_count);
 	int x = m->path[m->move_count][0];
 	int y = m->path[m->move_count][1];
-    printf("x: %d y: %d\n",x-2,y-2);
+    printf("x: %d y: %d\n",x,y);
 
 	bool check_jump_ret = false; 
     bool jump_found = false;
@@ -409,18 +409,18 @@ void Board::possible_jumps(int player, std::vector<move> *jumplist) {
         for(;y <8; y+=2) {
         	if(contains_piece(x,y) && (redflag == is_red(x,y))){
                 //std::cout << "found " << ((player == RED) ? "red " : "black ") << "piece at " << x << ", " << y << std::endl;
-        		move *m = new move;
-                for(int i = 0; i < 10; i ++){
-                    m->path[i][0] = 0;
-                    m->path[i][1] = 0;
+        		move m;
+                for(int i = 0; i < 10; i++){
+                    m.path[i][0] = 0;
+                    m.path[i][1] = 0;
                 }
-        		m->path[0][0] = x;
-        		m->path[0][1] = y;
-        		m->pieces_taken = 0;
-        		m->move_count = 0;
-                jumplist->push_back(*m);
+        		m.path[0][0] = x;
+        		m.path[0][1] = y;
+        		m.pieces_taken = 0;
+        		m.move_count = 0;
+                jumplist->push_back(m);
                 //delete m;
-                std::cout << "x: " << x << " y: " << y << "move_count: " << m->move_count;
+                std::cout << "x: " << x << " y: " << y << " move_count: " << m.move_count << std::endl;
                 check_jump(player,jumplist,jumplist->size()-1);
         	}
         }
