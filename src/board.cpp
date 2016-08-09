@@ -281,6 +281,13 @@ void Board::get_moves(int player, std::vector<move> *movelist){
 		possible_moves(player,movelist);
 }
 
+inline void make_jump(move *new_move, move* original,int new_x, int new_y){
+    *new_move = *original;
+    new_move->move_count = original->move_count + 1;
+    new_move->path[new_move->move_count][0] = new_x;
+    new_move->path[new_move->move_count][1] = new_y;
+    new_move->pieces_taken = original->pieces_taken + 1;
+}
 
 bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     move *m = &(jumplist->at(index));
@@ -295,12 +302,14 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
     if (can_jump(m->path[m->move_count],nw) && (!(is_red(x,y)) || is_king(x,y))) {
         jump_found = true;
     	move *new_move = new move;
-        *new_move = *m;
-    	new_move->move_count++;
-    	new_move->path[new_move->move_count][0] = x-2;
-    	new_move->path[new_move->move_count][1] = y-2;
-    	new_move->pieces_taken++;
-    	new_move->b = new Board(this);
+        // *new_move = *m;
+    	// new_move->move_count++;
+    	// new_move->path[new_move->move_count][0] = x-2;
+    	// new_move->path[new_move->move_count][1] = y-2;
+    	// new_move->pieces_taken++;
+    	// new_move->b = new Board(this);
+        make_jump(new_move, m, x-2, y-2);
+        new_move->b = new Board(this);
 
     	bool cnt = new_move->b->move_piece(x,y,x-2,y-2);
     	new_move->b->remove_piece(x-1,y-1);
@@ -316,11 +325,12 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
         jump_found = true;
         //std::cerr << "northeast, ";
     	move *new_move = new move;
-    	std::memcpy(new_move,m ,sizeof(move));
-    	new_move->move_count++;
-    	new_move->path[new_move->move_count][0] = x-2;
-    	new_move->path[new_move->move_count][1] = y+2;
-    	new_move->pieces_taken++;
+    	// std::memcpy(new_move,m ,sizeof(move));
+    	// new_move->move_count++;
+    	// new_move->path[new_move->move_count][0] = x-2;
+    	// new_move->path[new_move->move_count][1] = y+2;
+    	// new_move->pieces_taken++;
+        make_jump(new_move, m, x-2, y+2);
     	new_move->b = new Board(this);
     	bool cnt = new_move->b->move_piece(x,y,x-2,y+2);
     	new_move->b->remove_piece(x-1,y+1);
@@ -337,11 +347,13 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
         jump_found = true;
         //std::cerr << "southeast, ";
     	move *new_move = new move;
-    	std::memcpy(new_move,m,sizeof(move));
-    	new_move->move_count++;
-    	new_move->path[new_move->move_count][0] = x+2;
-    	new_move->path[new_move->move_count][1] = y+2;
-    	new_move->pieces_taken++;
+    	// std::memcpy(new_move,m,sizeof(move));
+    	// new_move->move_count++;
+    	// new_move->path[new_move->move_count][0] = x+2;
+    	// new_move->path[new_move->move_count][1] = y+2;
+    	// new_move->pieces_taken++;
+        make_jump(new_move,m,x+2,y+2);
+
     	new_move->b = new Board(this);
     	bool cnt = new_move->b->move_piece(x,y,x+2,y+2);
     	new_move->b->remove_piece(x+1,y+1);
@@ -357,11 +369,12 @@ bool Board::check_jump(int player,  std::vector<move> *jumplist, int index) {
         //std::cerr << "southwest";
         jump_found = true;
     	move *new_move = new move;
-    	std::memcpy(new_move,m,sizeof(move));
-    	new_move->move_count++;
-    	new_move->path[new_move->move_count][0] = x+2;
-    	new_move->path[new_move->move_count][1] = y-2;
-    	new_move->pieces_taken++;
+    	// std::memcpy(new_move,m,sizeof(move));
+    	// new_move->move_count++;
+    	// new_move->path[new_move->move_count][0] = x+2;
+    	// new_move->path[new_move->move_count][1] = y-2;
+    	// new_move->pieces_taken++;
+        make_jump(new_move,m,x+2,y-2);
     	new_move->b = new Board(this);
     	bool cnt = new_move->b->move_piece(x,y,x+2,y-2);
     	new_move->b->remove_piece(x+1,y-1);
